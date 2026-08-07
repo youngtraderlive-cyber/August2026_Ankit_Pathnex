@@ -1,0 +1,2 @@
+one hour linux pratice
+try to using teraform for instance active 
