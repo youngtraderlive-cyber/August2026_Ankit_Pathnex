@@ -1,0 +1,2 @@
+Today third class of kubernetes understanding Namespaces, services,service types in kubernetes 
+cluster IP, Nodeport, Load balancer
