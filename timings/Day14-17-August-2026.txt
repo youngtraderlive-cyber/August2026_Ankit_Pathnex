@@ -1,0 +1,1 @@
+Today revision of docker Allow developers to automate the deployment, scalling and management of application inside lighweight, portable container. A container is Isolated, self -contained environment Including everything an application needs to run code libraries and dependencies and system tool  

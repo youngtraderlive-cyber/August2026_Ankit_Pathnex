@@ -1,0 +1,3 @@
+today learn Affinity 
+Affinity is about telling kubernetes
+Want to pod to run near something (or avoid something)
