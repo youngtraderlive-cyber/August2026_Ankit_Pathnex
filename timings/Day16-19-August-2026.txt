@@ -1,0 +1,2 @@
+Today learn Argo CD this is dashboard for monitoring kubernetes cluster multiple pods
+I Learn the some code in kubernetes cluster and understanding the type of health status
