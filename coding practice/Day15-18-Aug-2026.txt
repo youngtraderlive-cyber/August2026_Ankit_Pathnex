@@ -1,0 +1,21 @@
+name: Deploy web application to multiple hosts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Copy web app files
+      copy:
+        src: /path/to/web/app/
+        dest: /var/www/html/
+    - name: Start web app service
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+    Terraform — Create EC2 with ALB (Application Load Balancer)
+resource "aws_lb" "pathnex_lb" {
+  name               = "pathnex-lb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.allow_ssh_http.id]
+  subnets            = [aws_subnet.public.id]
+}

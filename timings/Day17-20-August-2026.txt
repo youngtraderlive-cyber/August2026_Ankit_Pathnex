@@ -1,0 +1,4 @@
+Today I learn terraform Infrastructure as code tool that allow you to define and provision data center infrastructure using high level configruration 
+providers
+Resources
+Plateform Agnostic
