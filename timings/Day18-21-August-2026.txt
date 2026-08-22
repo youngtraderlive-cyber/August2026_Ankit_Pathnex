@@ -1,0 +1,2 @@
+Today is next class for terraform I learn Terraform. tfstate, state lock, import and state drift
+one hour english speaking practice
