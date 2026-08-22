@@ -1,0 +1,2 @@
+Today start new topic of Ansible used for configuration management application, deployment and task automtically. It administrators and developers automate repetitive.
+One hour English speaking 
