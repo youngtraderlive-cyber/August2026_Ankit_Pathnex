@@ -1,0 +1,2 @@
+Today Class is CI (Continuous Integration) CD (Continuous Delivery/Continuous Deployment)
+Pipeline, Jobs, Stages, Runner

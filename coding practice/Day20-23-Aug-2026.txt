@@ -1,0 +1,12 @@
+ymal 
+stages:
+- build
+- test
+- deploy
+build_job:
+Stage: build
+script: - echo "building project"
+test_job:
+stage: test 
+script: - echo " Running test" 
+script: - echo "Deploying to production..."
