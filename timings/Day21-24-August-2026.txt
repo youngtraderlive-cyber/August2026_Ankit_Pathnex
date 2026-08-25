@@ -1,0 +1,1 @@
+Today keep practicing CI/CD pipeline , Jenkinsfile , Pipelines or Scripted Pipelines, Nodes and Executors: 
