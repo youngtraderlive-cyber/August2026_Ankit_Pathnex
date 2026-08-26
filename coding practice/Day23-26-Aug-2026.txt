@@ -1,0 +1,13 @@
+GitLab CI/CD — Deploy Lambda Function
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - zip -r lambda.zip lambda/
+
+deploy:
+  stage: deploy
+  script:
