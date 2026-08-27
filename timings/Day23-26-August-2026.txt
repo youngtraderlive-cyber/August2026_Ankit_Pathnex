@@ -1,0 +1,2 @@
+Overview of the ELK that is powerful tool designed for searching, analysis and visualizinglarge volumes of data real-time,
+Elasticsearch, Logstash, Kibana 
