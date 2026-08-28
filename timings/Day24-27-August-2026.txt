@@ -1,0 +1,2 @@
+Today learn Kafka is distributed plateform tool designed for handle data-throughout real time data ,
+Kafka architecture is key componenets Producer, broker, consumer, topic, partition, zookeeper it is old versioon kafka raft for new version using new industries 
