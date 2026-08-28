@@ -1,0 +1,2 @@
+SSL certificate is a digital certificate that helps secure communication between a client (browser) and a server.
+Encryption, Authentication, Trust, HTTPS
