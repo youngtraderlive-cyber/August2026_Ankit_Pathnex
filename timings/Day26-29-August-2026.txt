@@ -1,0 +1,2 @@
+Today I learn SRE Site reliability Enginnering is a descipline that incorporates aspect of software engingeering and applies them to infrastructure and operation problem
+SLO,SLI,SLA
