@@ -1,0 +1,15 @@
+- name: Install nginx on ankit server
+  hosts: all
+  become: yes
+     taks:
+       - name: install nginx
+          yum:       
+            name: nginx
+            state: present
+
+Docker
+docker --version
+docker run ubuntu echo "HElle Ankit"
+
+FROM ubuntu:22.04
+CMD ["echo", "Hello ankit"] 
