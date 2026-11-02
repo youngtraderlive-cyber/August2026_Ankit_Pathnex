@@ -1,0 +1,64 @@
+- name: Install & Enable Nginx
+  hosts: all
+  become: yes
+     tasks:
+         - name Install Nginx
+             yum:
+               name: Nginx
+               state: present
+         - name: Enable nginx
+            service:
+              name:nginx
+              state: started
+              enbaled: yes
+
+Terraform - EC2 with Tags(r5.2xlarge)
+provider "aws" {
+   region = "ap-south-1"
+}  
+
+resource "aws_instance" "Ankit-ec2" {
+   ami             = "ami-dfd154521545df"
+   instance_type   = "r5.2xlarge"
+  tags = {
+    name        = "ankit-server"
+    Environment = "Training"
+    Owner       = "AnkitStudent"
+  }
+}
+
+
+apiVersion: app/v1
+kind: Deployment
+ metadata:
+  name: ankit-deployment
+ spec:
+   replicas: 2
+  selector: 
+    matchLabels:
+       app: ankit-app
+     template:
+       metadata:
+         labels:
+           app: ankit-app
+  spec:
+     container:
+      - name: app
+        image: nginx
+  ports:
+    - containerPort: 80
+
+Shell Script - Disk Usage
+#!/bin/bash
+df -h
+
+Docker Images and container
+Docker Pull Ubuntu
+Docker images
+Docker ps -a
+
+Docker File
+From ubuntu:22.04
+RUN apt update
+CMD ["echo", "Hello ankit"]
+

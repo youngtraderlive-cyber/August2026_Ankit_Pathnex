@@ -1,0 +1,6 @@
+Today write code and understanding top
+communicate 1 hour in english practice 
+And understand SAST, DAST, SCA
+SAST = static application security testing , sonarqube, semgrep, bandit, Eslint
+DAST = dynamic application security testing , OWASP ZAP, BURP SUIT, Nikto
+SCA = software composition Analysis Snyk, OWASP dependencies check , trivy
