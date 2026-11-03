@@ -1,0 +1,95 @@
+Ansible Install Apache ans start service
+
+- name: Install and start apache
+  hosts: all
+  become: yes
+    tasks:
+      - name: Install Apache
+          yum:
+            name: Httpd (443)
+            state: present
+      - name: start apache
+        service:
+          name: Http
+          state: started
+          enabled: yes
+ 
+provider "aws" {
+   region = "us-east-1"
+ }
+
+resource "aws_instace" "ankitec2" {
+   ami           = ami-dfds411544541dfg
+   instance_type = "t3.medium"
+   
+  tags = {
+    name = "ankit-T3"
+}
+  
+
+apiVersion: app/V1 (Rulebook)
+kind: ReplicaSet
+metadata:
+  name:  ankit-replicaSet
+ spec:
+  replicas: 3
+ selector:
+   matchLabels:
+     app: ankit-app
+ template:
+   metadata:
+      labels:
+        app: ankit-app
+ spec:
+  containers:
+     - name: app
+       image: nginx
+ ports:
+   - containerPort: 80
+
+#!/bin/bash
+echo "Current user: $(whoami)
+echo "Current user group: $(groups)"
+ 
+Docker file
+From nginx: latest
+COPY index.html /usr/share/ngix/html/index.html
+
+HTML
+<h1>hello ankit</h1>
+
+bash
+real path
+
+/usr/share/nginx/html
+
+bash
+docker build -t ankit-nginx
+docker run -d -p 80:80 ankit-nginx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
