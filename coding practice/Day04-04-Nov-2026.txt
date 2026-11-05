@@ -1,0 +1,100 @@
+pipeline {                            (Starting point of the Jenkins pipeline)
+     agent any                        (Run the pipeline on any available Jenkins agent)
+        stages {                      (Collection of different stages)
+          stage('Build') {            (A particular task or phase)
+            stpes {                   (Commands to execute inside a stage)
+              echo 'Building project' (	Print a message in Jenkins console output)
+          }
+       }
+        stage('Test') {
+          steps {
+            echo 'Running tests'
+           }
+        }
+          stage('Deploy') {
+            steps {
+              echo 'Deployig application'
+             }
+          }
+       }
+    } 
+
+Gitlab CI/CD Git repository  
+.gitlab-ci.yml
+
+stages:
+  - build
+  - test
+  - deploy
+
+Build:
+   stage: build
+    script:
+       - echo "Build project"
+Test:
+   stage: test
+    script:
+      - echo "Running test"
+Deploy:
+   stage: deploy
+    script:
+       - echo "Deploying Application"
+
+- name: Install and configure nginx    (What task going perform)
+  hosts: all                           (Target the server)
+  become: yes
+      tasks:
+          - name: install Nginx  
+              yum:                        (Package management module)
+                name: Nginx
+                state: present            (Ensure Nginx is installed)
+          - name: congigure nginx
+              template:
+                srv: nginx.config.j2
+                dest: /etc/nginc/nginc.conf
+          - name: start nginx service
+              service:
+                  name: nginx
+                  state: started
+                  enabled: yes
+
+ansible-playbook -1 Inventory_file nginx-playbook.yml
+
+Terraform — EC2 with Security Group
+resource "aws_security_group" "example" {
+  name        = "example_security_group"
+  description = "Allow SSH and HTTP"
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
+docker
+From Ubuntu:22.04
+RUN apt update && apt install apache2 -y
+RUN echo "Hello Pathnex" > /var/www/html/index.html
+CMD ["apachectl", "-D", "FOREGROUND"]
+
+# Bash
+/var/www/html
+
+
+
