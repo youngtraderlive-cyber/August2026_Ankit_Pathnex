@@ -1,0 +1,76 @@
+Ansible Install docker
+
+- name: Install docker
+  hosts: all
+  become: yes
+     tasks:
+         - name: Intall docker
+              yum:
+               name: docker
+               state: present
+         - name: start docker
+             service:
+                name: docker
+                state: started
+                enbaled: yes
+
+Terraform provisioning EC2 with VPC
+resource "aws_vpc" "main" {
+   cidr_block = "10.0.0.0/16"
+}
+
+
+resource "aws_instance" "ankitec2" {
+  ami            = ami-s515fdfd5f5df1
+  instance_type  = "t2.medium"
+  subnet_id      = aws_subnet.main.id
+    tags = {
+      Name = "ankit-ec2"
+   }
+ }
+
+Kubernetes - Pod with volume Mount
+apiVersion: v1
+kind: pod
+metadata:
+  name: ankit-pod
+spec:
+  container:
+     - name: web
+       image: nginx
+       volumeMounts:
+          - mounthPath: /usr/share/nginx/html
+            name: html-volume
+   volume:
+     - name: html-volume
+       hostPath:
+         path: /data
+         type: Directory
+
+Shell script - check for running service
+
+#!/bin/bash
+service=("nginx" docker" "httpd"
+for service in "${service[@]}"
+do
+  if systemctl is-active --quite $service; them
+    echo "$service is running
+  else
+    echo "$service is not running"
+  fi
+ done
+
+Docker
+Node.js Application (JavaScript)
+console.log("Hello Ankit");
+
+Docker file
+FROM node:18
+WORKDIR /opt/ankit/node-app
+COPY app.js /opt/ankit/node-app/
+CMD ["node","/opt/ankit/node-app/app.js"]
+
+opt/ankit/node-app
+
+
+
