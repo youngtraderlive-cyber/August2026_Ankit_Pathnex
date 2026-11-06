@@ -1,0 +1,91 @@
+```groovy
+pipeline { 
+  agent any
+      stages {
+          stage('Clone Repository') {
+              steps {
+                 git 'https://github.com/ankit/sample-repo.git'
+              }
+           }
+           stage('Build') {
+              steps {
+                 echo 'Building project from git repositroy'
+                }
+              }
+           stage('Test') {
+                steps {
+                  echo 'Running unit tests'
+                }
+              }
+            stage('Deploy') {
+                 steps {
+                    echo 'Deploying Application'
+                   }
+                }
+             }
+         }
+
+
+
+Gitlab CI/CD
+stages: 
+    - build
+    - push
+    - deploy
+
+build:
+   stage: build
+    script:
+      - docker Build -t ankit-app
+push:
+   stage: push
+     script
+       - docker push ankit-app
+deploy:
+   stage: deploy
+     script:
+        - kubectl apply-f kubernetes/deployment.yaml
+
+Ansible - Create User and Set permissions
+ - name: Create a new user
+   hosts: all
+   become: yes
+       tasks:
+         - name: crate user
+           user:
+             name: ankit
+             state: present
+             shell: /bim/bash
+         - name: set permission for the user
+           file:
+             path: /home/ankit/
+             ower: ankit
+             group: ankit
+             mode: '0755'
+          
+Terraform - EC2 with Tags and volume
+resource " aws_instace" "Ankitec2" {
+   ami                 = ami-fdf656265646fgf
+   instance_type       = "t2.medium"
+    
+  tags = {
+      Name = "ankit-server"
+    }
+  
+  ebs_block_device {
+     device_name= "/dev/sdh"
+     volume_size = 50
+    }
+  }
+
+Docker 
+Python application
+print("Hello ankit")
+
+Docker file
+From Pyhton:3.11
+Workdir /otp/ankit/ankit-app
+Copy app.py /opt/ankit/python-app/
+Cmd ["ankit", "/otp/ankit/ankit-app/app.py"]
+
+/opt/ankit/ankit-app
