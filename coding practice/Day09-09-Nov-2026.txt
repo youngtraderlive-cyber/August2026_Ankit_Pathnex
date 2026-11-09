@@ -1,0 +1,100 @@
+- name: Setup docker container for Nginx
+  hosts: all
+  become: yes
+    tasks:
+      - name: Pull Nginx Image
+         docker_image:
+           name: nginx
+           source: pull
+ 
+      - name: Task Description
+         docker_container:
+            name: nginx-container
+            image: nginx
+            state: started
+            published_port:
+                - "8080:80"
+
+resource "aws_launch_configuration" "ankitec2" {
+     name           = "ankit-config"
+     image_id       = "ami-0454651sdsdf0sdf5"
+     instance_type  = "t2.micro"
+}
+
+resource "aws_autoscaling_group" "ankitec2" {
+     desired_capacity       = 2
+     max_size               = 3
+     min_size               = 1
+     vpc_zone_identifier    = ["subnet-12345678"]
+     launch_configuration   = aws_launch_configuration.example.id
+}
+
+apiVeraion: app/V1  
+kind: deployment
+metadata:                #contains information about the resource.
+  name: ankit-deployemnt #Deployment name
+spec: 
+  replicas: 1
+
+selector:
+  matchLabels:
+     app: ankit-app
+    
+template:
+  metadata:
+    labels:
+      app: ankit-app
+
+spec:
+ container:
+   - name: nginx
+     image: nginx
+
+port:
+  - containerPort: 80
+
+---
+
+apiVersion: autocaling/v2
+kind: horizontalPodAutoscaler
+metadata:
+   - name: ankit-hpa
+spec:
+  scaleTargetRef:
+     apiVersion: app/v1
+     kind: Deployment
+     name: ankit-deployment
+
+jenkins - deploy to kubernetes
+pipeline {
+   agent any
+      stages { 
+         stage('Deploy to kubernetes') {
+             steps {
+               script {
+                 sh 'kubectl apply -f deployment.yaml'
+              }
+           }
+        }
+     }
+  }
+
+Gitlab CI/CD 
+
+stages:
+   - deploy
+deploy
+  stage: deploy
+  script:
+    - kubectl apply -f kubernetes/deployment.yaml
+
+
+docker
+Environment Variables
+FROM ubuntu:22.04
+ENV INSTITUTE =ankit
+ENV COURSE=DevOps
+CMD echo "$INSTITUTE - $COURSE"
+
+
+
