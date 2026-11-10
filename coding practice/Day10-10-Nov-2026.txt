@@ -1,0 +1,136 @@
+- name: Setup Docker Container for multiple app
+  hosts: all
+  become: yes
+    tasks:
+        - name: Pull Web App Image
+           docker_image:
+               name: ankit-web-app
+               source: pull
+        - name: Pull Database App image
+           docker_image:
+              name: ankit-database-app
+              source: pull
+        - name: Run Web App Container
+           docker_container:
+              name: ankit-app
+              image: ankit-web-app
+              state: started
+              published_ports:
+                - "8080:80"
+        - name: Run Database App Container
+          docker_container:
+            name: database-app
+            image: ankit-database-app
+            state: started
+            published_ports:
+               - "3306:3306"
+
+resource "aws_vpc" "main" {
+   cidr_block = "10.0.0.0/16"
+}
+
+resource "aws_subnet" "public" {
+   vpc_id                 = aws_vpc.main.id
+   cidr_block             = "10.0.1.0/24"
+   available_zone         = "us-east-1a"
+   map_public_ip_on_launch= true
+}
+
+resource "aws_subnet" "private" {
+  vpc_id             = aws_vpc.main.id
+  cidr_block         = "10.0.2.0/24"
+  availability_zone  = "us-east-1b"
+}
+
+apiVeraion: app/v1
+kind: statefulset
+metadata
+   name: ankit-db
+spec:
+  serviceName: "ankit-db"
+  replicas: 3
+selector:
+  matchLabels:
+    app: ankit-db
+template:
+  metadata:
+    labels:
+      app: ankit-db
+spec: 
+ container:
+    - name: db
+      image: mysql:5.7
+ volumeMouts:
+    - mountPath: /var/lib/mysql
+      name: mysql-storage
+
+volumeClaimTemplates:
+ - namedata:
+      name: mysql-storage
+     spec:
+       accessModes:
+         - ReadWriteonce
+        resource:
+          requests:
+            storage: 5gi
+ 
+Jenkins - Build Deploy to Kubernetes
+
+pipeline {
+  agent any    
+  environment {
+      IMAGE_NAME = 'ankit-web-app'
+}
+   stages {
+     stage('Build Docker Image') {
+        step {
+           script {
+             docker.build("${env.IMAGE_|NAME}")
+          } 
+       }
+    }
+     stage('Push Docker Image') {
+       step {
+          script {
+            docker.withRegistry('http://docker.io'. 'docker credentials') {
+             docker.image("${env.IMAGE_NAME}").push('latest')
+             }
+          }
+       }
+    }
+     stage('Deploy to kubernetes') {
+        step {
+          script {
+             sh 'kubetl apply -f deployment.yaml'
+             }
+           }
+         }
+       }
+    }
+
+Gitlab CI/CD
+stage:
+   - build
+   - push
+   - deploy
+build:
+   stage: build
+   script:
+      - docker build -t ankit-web-app
+push
+   stage: push
+   script:
+      - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWRD"
+      - docker push ankit-web-pp
+ 
+deploy
+  stage: deploy
+  script:
+    - kubectl apply -f kubernetes/deployment.yaml
+
+Docker
+FROM ubuntu:22.04
+WORKDIR /opt/ankit/devops-project
+COPY . /opt/ankit/devops-project/
+CMD ["ls", "-1", "/opt/ankit/devops-project"]
+             
