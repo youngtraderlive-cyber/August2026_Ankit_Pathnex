@@ -1,0 +1,119 @@
+- name: Setup Auto Scaling group (ASG)
+  hosts: all
+  become: yes
+     tasks:
+         - name: Create launch configuration
+             ec2_asg:
+                name: ankit-asg
+                region: ap-south-1
+                launch_config_name: ankit-launch-config
+                min_size: 1
+                max_size: 3
+                desired_capacity: 2
+                vpc_zone_identifier: subnet-12345678
+
+resource "aws_lb" "ankit-lb" {
+    name               = "ankit-lb"  This is the actual name of your Load Balancer in AWS.
+    internal           = false   Internet-facing Load Balancer
+    load_balancer_type = "application" ALB works at Layer 7 (Application Layer) of the OSI model.
+    security_group     = [aws_security_group.allow_ssh_http.id]
+    subnet             = [aws_subnet.public.id]
+  
+resource   "aws_instance" "ankit_ec2" {
+      ami            = "ami-fdf654466sdfds"
+      instance_type  = "t2.micro"
+   security_group    = [aws_security_group.allow_ssh_http.name]
+      tags = {
+        name = "ankit-EC2"
+} 
+
+kubernetes horizontal Pod Autoscaler with Load Balancer
+
+apiVersion: apps/v1 
+kind: deployment This specifies the type of Kubernetes resource.
+metadata:
+   name: ankit-web-app
+    
+spec: 
+  replicas: 2
+  selector:
+  metachLabels:
+     app: ankit-web-app
+template:
+  metadata:
+     labels:
+       app: ankit-web-app
+spec:
+  containers:
+      - name: web
+        image: nginx
+        ports:
+          - containerPort: 80
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: 
+   name: ankit-web-app
+sepc:
+  scaleTargetRef:
+    apiVersion: app/v1
+    kind Deployment
+    name: ankit-web-app
+ minReplicas: 1
+ maxReplicas: 
+Jenkinsfile - Implement paraller stages
+pipeline {
+  angent any
+    stages {
+      stage('Build & Test') {
+        paraller {
+           stage('Build') {
+             steps {
+                echo 'Building project...'
+           }
+        }
+         stage('test') {
+           steps {
+             echo 'Running tests....'
+            }
+         }
+      }
+   }
+         stage('Deploy') {
+          steps {
+            echo 'Deployment Project...'
+           }
+        }
+     }
+  }
+
+GITLAB CI/CD
+stages:
+   - build
+   - test
+   - deploy
+build:
+   stage: build
+     script:
+       - docker build -t ankit-web-app
+test:
+   stage: test
+    script:
+       - docker run ankit-web-app npm test
+deploy:
+   stage: deploy
+     script:
+        - kubectl apply -f kubernete/deployment.yaml
+    
+FROM ubuntu
+VOLUME ["/opt/ankit/data"]
+CMD ["steep", "1000"
+
+Real path
+/opt/ankit/data
+
+bash command
+docker volume create ankit-volume
+
+
