@@ -1,0 +1,4 @@
+Today write code and understanding the concept
+speaking practice
+revised mock test EKS stack, SRE
+
