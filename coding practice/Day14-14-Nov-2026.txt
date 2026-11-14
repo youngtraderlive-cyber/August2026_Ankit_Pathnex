@@ -1,0 +1,99 @@
+- name: Setup Nginx and Revese proxy
+  hosts: all
+  become: yes
+     tasks:
+       - name: Setup nginx
+           yum:
+              name: Nginx
+              state: present 
+       - name: configure nginx as revese proxy
+          template:
+            src: revese-proxy.confg.j2
+            dest: /ect/nginx/conf.d/revese-proxy.conf
+       - name: Restart nginx service
+          service:
+             name: nginx
+             state: restarted
+             enlabed: yes
+
+terraform "aws_s3_bucket" "ankit-bucket" {
+    bucket       = "ankit-bucket"
+      versioning {
+         enabled = true
+ }
+    logging { 
+       target_bucket = "ankit-log-bucket"
+       target_profix = "logs/"
+}
+
+apiVersion: networking.k8s.io/v1
+kind: ingress
+metadata:
+   name: ankit-ingress
+annotations:
+   nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+   - host: ankit.local
+https:
+  path:
+    - path: /
+       pathType: prefix
+         backend:
+            service:
+               name: ankit-service
+                port:
+                    number: 80
+
+jenkis - build, test and deploy
+pipeline {
+    agent any 
+       stages {
+          stage('Build') {
+             steps {
+                echo 'Building Docker Image...'
+                docker.build('ankit-web-app')
+             }
+         }
+           stage('Test') {
+              steps {
+                echo 'Running test'
+              }
+           }
+             stage('Deploy') {
+                 stpes {
+                     script {
+                        sh 'kubectl apply -f kubernetes/deployment.yaml'
+                    }
+                 }
+              }
+           }
+        }
+ 
+Gitlab CI/CD - Multi-Stage Deployment with helm
+stage:
+   - build
+   - push
+   - deploy
+
+build:
+   stage: build
+    script:
+        - docker build -t ankit-web-app
+push:
+   stage: push
+    script:
+       - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+       - docker push ankit-web-app
+
+deploy: 
+  stage: deploy
+  script:
+    - helm upgrade --install ankit-nginx ankit/nginx-ingress
+
+docker
+
+FROM ubuntu
+ENTRYPOINT ["echo"]
+CMD ["hello ankit"]
+
