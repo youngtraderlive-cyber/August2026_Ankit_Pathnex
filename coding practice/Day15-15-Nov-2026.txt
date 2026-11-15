@@ -1,0 +1,107 @@
+- name: Deploy web application to multiple hosts
+  hosts: all
+  become: yes
+     tasks:
+        - name: copy web app files
+          copy:
+            src: /path/to/web/app
+            dest: var/www/html
+        - name: Start web app service
+           service: 
+             name: appache2
+             state: started
+             enabled: yes 
+
+resource "aws_lb" "ankit_lb" {
+    name               = "ankit_lb"
+    internet           = false
+    load_balancer_type = "application"
+    security_groups    = [aws_security_group.allow_ssh_http.id]
+    subnets            = [aws_subnet.public.id]
+}
+
+resource "aws_instance" "ankit_ec2"
+ ami           = "ami-0abcd1234abcd1234"
+ instance_type = "t2.micro"
+ security_group = [aws_security_group.allow_ssh_http.name]
+ vpc_security_group_ids = [
+    aws_security_group.allow_ssh_http.id
+]
+
+ tags = {
+     Name = "ankit-ec2"
+}
+
+
+pipeline {
+   agent any 
+      environment {
+         IMAGE_NAME = 'ankit-web-app'
+         DEPLOY_ENV = 'production'
+}
+     stages (
+       stage('Build') {
+          steps {
+               echo 'Building Docker image....'
+               docker.build("${env.IMAGE_NAME}")
+        }
+    }
+      stage('Test') {
+         steps {
+            echo 'Running test'
+        }
+     }
+       
+      stage('Deploy to kubernetes') {
+         steps {
+           script { 
+              if (env.DEPLOY_ENV == 'Production') {
+                   sh 'kubectl apply -f kubernetes/prod-deployment.yaml'
+               } else {
+                  sh 'kubectl apply -f kubernets/dev-deployment.yaml'
+             }
+          }
+       }
+    }
+   
+
+
+Gitlab CI/CD
+stage:
+   - build
+   - push
+   - deploy
+
+build_Job:
+      stage: build
+       script:
+        - docker build -t ankit-web-app .
+push_job:
+      stage: push
+       script:
+          - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWRD"
+          - docker push ankit-web-app
+deploy_job:
+        stage: deploy
+         script:
+            - |
+               if [ "$CI_COMMIT_REF_NAME" == "main" ]; then
+                   kubectl apply -f kubernetes/prod-deployment.yaml
+               else
+                   kubectl apply -f kubernetes/dev-deployment.yaml
+            fi
+
+FROM ubuntu
+RUN apt update && \
+    apt install curl -y && \
+    apt install vim -y
+    apt install vim -y 
+CMD ["echo", "Hello Pathnex"]
+
+
+
+
+
+
+
+
