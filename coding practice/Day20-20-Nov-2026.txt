@@ -1,0 +1,107 @@
+Ansible - Configure firewell with iptable
+- name: Configure Firewell with iptable
+  hosts: all
+  become: yes
+     tasks:
+       - name: set default policies to drop all traffic
+         command: iptable -P INPUT DROP
+       - name: Allow SSH traffic
+         command: iptables -A tcp --dport 22 -j ACCEPT
+       - name: Allow HTTP traffic
+         command: iptables -A INPUT -p tcp --doprt 80 -j ACCEPT
+       - name: Save iptables configuration
+         command: service iptables save
+
+terrform - configure security group for EC2
+
+resource "aws_security_group" "ankit_sg" {
+   name_prefic = "ankit-sg"
+   description = "Allow SSH and HTTP"
+ ingress {
+   from_port   = 22
+   to_port     = 22
+   protocol    = "tcp" 
+   cidr_blocks = ["0.0.0.0./0"]
+}
+ ingress {
+   from_port   = 80
+   to_port     = 80
+   protocol    = "tcp"
+   cidr_blocks = ["0.0.0.0/0"]
+}
+
+
+kubernetes RBAC configuration for access control
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: 
+   name: ankit-cluster-admin
+subject:
+  - kind: User
+    name: ankit-user
+    apiGroup: rbac.authorization.k8s.io
+role.Ref:
+    kind: ClusterRole
+    name: cluster-admin
+    apiGroup: rbac.authorization.k8s.io
+
+jenkins - secure credential management
+pipeline {
+  agnet any
+  environment {
+     REGISTRY_PASSWORD = credentials('docker-registry-password') 
+}
+   stages {
+    stage('Build') {
+      steps {
+          echo 'Building project...'
+          docker.build('ankit-web-app')
+       }
+    }
+     stage('push') {
+       steps {
+           script {
+               docker.withRegistry('https://docker.io','docker-credentials') {
+                 docker.image('ankit-web-app').push('latest')
+                 }
+              }
+           }
+        }
+     }
+  }
+
+Gitlab CI/CD - Secure Deployment with Secrets Management
+stages:
+  - build
+  - push
+  - deploy
+build:
+  stage: build
+   script:
+      - docker build -t ankit-web-app.
+push:
+  stage: push
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+    - docker push ankit-web-app
+deploy
+   stage: deploy
+   script:
+     - kubectl apply -f kubernets/deployment.yaml
+     - kubectl get pods --watch
+
+
+docker
+
+docker run -dit --name c1 --network ankit-network ubuntu
+
+docker run	Create and start a container
+-d	        Run in background
+-i	        Keep STDIN open
+-t	        Allocate a terminal
+--name c1	Give container the name c1
+--network	Connect container to a network
+pathnex-network	Network to connect
+ubuntu	        Use Ubuntu image
+
