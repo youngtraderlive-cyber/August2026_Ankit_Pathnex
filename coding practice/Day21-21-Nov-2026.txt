@@ -1,0 +1,119 @@
+- name: Backup and restore files
+  hosts: all
+  become: yes
+    - name: Create backup of /etc directory
+     command: tar -czvf /tmp/etc-backup.tar.gz /etc
+    - name: Copy backup to remote server
+      copy:
+        src: /tmp/etc-backup.tar/gz
+        dest: /tmp/etc-backup.tar.gz
+    - name: Restore backup from remote server
+      command: tar -xzuvf /tmp/etc-backup.tar.gz -c /
+
+terraform s3
+
+resource "aws_s3_bucket" "ankit_bucket" {
+  bucket      = "ankit-buckup-bucket"
+  region      = "us-east-1"
+  
+  versioning {
+    enbaled = true
+  }
+}
+
+resource "aws_s3_bucket" "ankit_backup_bucket_eu" {
+    bucket = "ankit_backup_bucket_eu"
+    region = "eu-west-1"
+     
+      versioning {
+        enabled = true
+  }
+}
+
+
+resource "aws_s3_bucket_object" "ankit_backup_file" {
+  bucket  = aws_s3_bucket.ankit_bucket.bucket
+  key     = "backup.tar.gz"
+  source  = "ankit-backup-tar.gz
+}
+
+
+kubernetes 
+
+apiVersion: app/v1
+kind: statefulset
+metadata:
+  name: ankit-statefulset
+spec:
+  serviceName: "ankit"
+  replicas: 3
+selector:
+   matchLabels:
+    app: ankit
+
+template:
+  metadata:
+    labels:
+      app: ankit
+spec:
+ container:
+    - name: nginx
+      image: nginx
+    volumeMounts:
+      - mountPath: /usr/share/nginx/html
+        name: web-contet
+  volumeClaimTemplate:
+     - metadata:
+         name: web-content
+    spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+           request:
+             storage: 5Gi
+
+ 
+jenkins backbup strategy
+
+pipeline {
+  agent any 
+     stages {
+        stage('Backup') {
+            steps {
+                 echo 'Backing up jenkins workspace...'
+                 sh 'tar -czvf /tmp/jenkins-backup.tar.gz ${WORKSPACE}'
+              }
+           }
+         stage('Restore') {
+            steps {
+               echo 'Restorin jenkins workspace..'
+               sh 'tar -xzvf /tmp/jenkins-backup.tar.gz ${WORKSPACE}'
+            } 
+         }
+      }
+   }
+
+Gitlab CI/CD backup and Restore Deployment Files
+stages:
+   - backup
+   - restore
+backup:
+   stage: backup
+   script:
+      - tar -czvf /tmp/backup.tar.gz kubernetes/deployment.yaml
+     
+restore:
+   stage: restore
+   script:
+      - tar -xzvf /tmp/backup.tar.gz -C kubernetes/
+🔹 Docker
+# Docker Compose
+version: '3'
+services:
+  web:
+    image: nginx
+    container_name: pathnex-nginx
+    ports:
+      - "80:80"
+
+
+
