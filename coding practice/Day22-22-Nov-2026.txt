@@ -1,0 +1,129 @@
+- name: Deploy Nginx across multiple kubernetes cluster
+  hosts: localhost
+  tasks:
+     - name: Configure kubectl for cluster 1
+       command: Kubect --context=us-east config use-context us-east-cluster
+     - name: Deploy Nginx on cluster 1
+       command: kubectl apply -f kubernetes/deployment.yaml
+     - name: Configure kubectl for cluster 2
+       command: kubectl config use-context us-west-cluster
+     - name: Deploy Nginx on Cluster 2
+       command: kubectl apply -f kubernetes/deployment.yaml
+
+terraform - Multi-Region kubernetes Cluster with EKS and GKE
+  
+resource "aws_eks_cluster" "ankit_eks" {
+   name          = "ankit-eks-cluster" 
+   role_arn      = aws_iam_role.eks_cluster_role.arn
+   
+   vpc_config {
+       subnet_id = [aws_subnet.pathnex_subnet.id]
+   }
+  
+    depend_on = [aws_iam_role_policy_attachment.eks_cluster_role_policy]
+ }
+
+resource "google_container_cluster" "ankit_gke" {
+  name               = "ankit-gka-cluster"
+  location           = "us-central1-a"
+  initail_node_count = 3
+    node_config   {
+       machine_type = "n1-standard-1"
+
+kubernetes
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: ankit-deployment
+spec:
+  replicas: 3
+selector:
+   matchLabels: 
+      app: ankit-app
+
+template:
+   metadata:
+      labels:
+        app: ankit-app
+
+spec:
+  container:
+      - name: nginx
+        image: nginx
+ports:
+  - containerPort: 80
+
+---
+  
+apiVersion: federation.k8s.io/v1betal
+kind: federatedDeployment
+metadata:
+  name: ankit-federated-deployment
+  namespace: default
+spec:
+  template:
+  spec:
+   template:
+    spec:
+      replicas: 3
+   selector:
+    matchLabels:
+     app: ankit-app
+  template:
+   metadata:
+     labels:
+       app: ankit-app
+ selector:
+   matchLabels:
+     app: ankit-app
+ template:
+    metadata:
+     labels:
+        app: ankit-app
+ 
+jenkisfile -Multicluster Deployment strategy
+pipeline {
+  agent any 
+     stages {
+       stage('Deploy to Cluster 1') {
+         steps {
+           script {
+              sh 'kubectl --context=us-east-cluster apply -f kubernetes/deployment.yaml
+           }
+        }
+     }
+        stage('Deploy to cluster 2') {
+          steps {
+             script {
+                 sh 'kubectl --context=us-wast-cluster apply - kubernetes/deployment.yaml'
+               }
+            }
+         }
+     }
+  }
+
+Gitlab CI/CD 
+stages:
+   - deploy
+deploy_cluster_1
+   stage: deploy
+   script:
+      - kubectl --context=us-east-cluster apply -f kubernetes/deployment.yaml
+       
+ deploy_cluster_2:
+   stage: deploy
+   script:
+      - kubectl --context=us-west-cluster apply -f kubernetes/deployment.yaml
+              
+version '3'
+services:
+  db: images: mysql:8
+  container_name: ankit-db
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+web:
+  image: nginx
+  container_name: ankit-web
+
+
