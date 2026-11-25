@@ -1,0 +1,3 @@
+Today write code and undertanding the concept
+troubleshooting in eks
+
