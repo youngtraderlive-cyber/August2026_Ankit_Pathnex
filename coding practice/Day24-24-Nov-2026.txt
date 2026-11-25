@@ -1,0 +1,92 @@
+Ansible Deploy docker container with kubernetes with helm
+
+- name: deploy docker container with helm
+  hosts: localhost
+  tasks:    
+    - name: Install helm
+      command: curl http://raw.githubsercontent.com/helm/helm/master/script/git-helm-3 | bash
+    - name: deploy microservice with helm
+      command: helm install ankit-app ./microservice-chart
+
+terraform VPC module
+
+module "ankit_vpc" {
+   source = "./vpc"
+}
+
+resource "aws_vpc" "main" {
+   cidr_block = "10.0.0.0/16"
+}
+
+module "ankit_instance" {
+ source  = "./instance"
+ vpc_id  = module.ankit_vpc.vpc_id
+}
+
+output "instance_id" {
+  value = module.ankit_instance.instance_id
+}
+
+apiVersion: app/v1 Which Kubernetes API version to use , API version used for Deployment
+kind: deployment  Type of Kubernetes resource, Manages application Pods
+metadata:
+   name: ankit-web-app
+spec:
+  replicas: 3
+selector:
+  matchLabels:
+    app: ankit-web-app
+template:
+  metadata:
+     labels:
+       app: ankit-web-app
+spec:
+  container:
+     - name: nginx
+       image: nginx
+       ports:
+         - containerPort: 80
+
+apiVersion: autocaling/v2
+kind: horizontalautoscaling
+metadata:
+     name: ankit-web-app
+
+spec:
+  scaleTargertRef:
+     apiVersion: apps/v1
+     kind: Deployment
+     name: ankit-web-app
+   minReplicas: 2
+   maxReplicas: 10
+targetCPUUtilizationPercentage: 80
+
+jenkinsfile - Scaling CI/CD pipeline
+pipeline {
+  agent any 
+     stages {
+        stage('Scale up') {
+           steps {
+             echo 'Scaling up jenkins pipeline agent for heavy workload..'
+                  // simulating scaling logic
+              }
+           }
+         stage('Build') {
+           stpes { 
+              echo 'Building project..'
+            }
+         }
+          stage('Deploy') {
+            steps {
+               echo 'Deploing project...'
+            }
+         }
+     }
+ }
+
+
+docker 
+healthcheck
+
+FROM nginx
+HEALTHCHECK CMD curl --fail http://localhost || exit 1
