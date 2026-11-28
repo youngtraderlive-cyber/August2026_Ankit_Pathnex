@@ -1,0 +1,36 @@
+- name: Setup VPC Peerting Between Accounts
+  hosts: localhost
+  tasks:
+    - name: create vpc peering connection
+      command: aws ec2 create-vpc-peering-connection --vpc-id vpc-12345678 --
+
+resource "aws_vpc_peering_connection" "ankit_peering" {
+   vpc_id          = aws_vpc.ankit_vpc.id
+   peer_vpc_id     = aws_vpc.peer_vpc.id
+}
+
+resource "aws_route" "ankit_route" {
+   route_table_id            = aws_route_table.ankit_rt.id
+   destination_cidr_block    = "10.0.0.0/16"
+   vpc_peering_connection_id = aws_vpc_peering_connection.ankit_peering.id
+}
+
+kubernetes: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ankit-vpc-policy
+spec:
+  podSelector:
+     matchLabels:
+        app: ankit-app
+   ingress:
+       - from:
+           -podSelector:
+                matchLabels:
+                   app: ankit-db
+
+docker save -o pathnex-nginx.tar pathnex-nginx
+docker load -i pathnex-nginx.tar
+
+
+
