@@ -1,0 +1,50 @@
+- name: Deploy Serverless Lambda Function
+  hosts: localhost
+  tasks:
+    - name: Create Lambda function
+      command: aws lambda create-function --funtion-name ankit-lambda --runtime nodejs14.x
+              --role arn:aws:iam::123456789012:role/lambda-role
+
+apiVersion: kubeless.io/v1beta1
+kind: Funtion
+metadata:
+   name: ankit-lambda
+   namespace: defult
+spec:
+   runtime: nodejs14
+handler: index.handler
+funtion: |
+  module.exports = funtion(event, context) {
+       conext.succeed('Hello World');
+};
+
+jenkinsfile - Lambda function deploy pipeline
+pipeline {
+   agent any 
+      stages {
+         stage('Buld') {
+            stpes {
+              echo 'Building Lambda funtion package...'
+              sh 'zip -r lambda.zip lambda/'
+          }
+      }
+
+         stage('Deploy to lambda') {
+           steps {
+              script {
+                  sh 'aws lambda update-function-code --function-name pathnex-lambda --zip-file fileb://lambda.zip'
+                }
+              }
+           }
+        }
+     }
+
+docker exec -it pathnex-nginx bash
+docker stats
+
+
+
+
+
+
+
